@@ -4,4 +4,6 @@ RUN mkdir -p /var/www/html
 
 WORKDIR /var/www/html
 
-COPY . ./
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+CMD ["nginx", "-g", "daemon off;"]

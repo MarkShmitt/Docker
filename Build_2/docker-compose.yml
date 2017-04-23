@@ -1,38 +1,42 @@
 version: '2.0'
 services:
- mysql:
-  image: mariadb 
-  volumes:
-   - ./db-data:/var/lib/mysql
-  environment:
-   MYSQL_ROOT_PASSWORD: password
-  ports:
-   - "3306:3306"
- php:
-  build:
-   context: .
-   dockerfile: Dockerfile-php-fpm
-  volumes:
-   - ./code:/code
-   - ./wordpress:/var/www/html
-  links:
-   - wordpress
-  ports:
-   - "9000:9000"
  nginx:
   build: .
   volumes:
-   - ./code:/code
    - ./wordpress:/var/www/html
   ports:
    - "80:80"
   links:
    - php
+ php:
+  build:
+   context: .
+   dockerfile: Dockerfile-php-fpm
+  volumes:
+   - ./wordpress:/var/www/html
+  links:
+   - mysql
+   - wordpress
+  ports:
+   - "9000:9000"
  wordpress:
   image: wordpress:4.7.3
   links:
    - mysql
   volumes:
    - ./wordpress:/var/www/html
+  expose:
+   - "80"
+ mysql:
+  image: mariadb 
+  volumes:
+   - ./db-data:/var/lib/mysql
+  environment:
+   MYSQL_DATABASE: wp
+   MYSQL_USER: wp
+   MYSQL_PASSWORD: wp
+   MYSQL_ROOT_PASSWORD: aqwe123
+  ports:
+   - "3306:3306"
 
   
